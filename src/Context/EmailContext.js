@@ -1,12 +1,40 @@
-import {  createContext, useContext } from "react";
+import {  createContext, useContext, useEffect, useReducer } from "react";
+import reducer from "../Reducer/EmailReducer";
+import axios from "axios";
 
 const EmailContext = createContext()
 
+const API = "https://flipkart-email-mock.now.sh/"
+
+const initialState = {
+    emailList : [],
+    isLoading: false,
+    errorMsg: '',
+}
+
 export const EmailContextProvider = ({children}) => {
 
-    const test = "testing"
+    const [state, dispatch] = useReducer(reducer, initialState)
 
-    return <EmailContext.Provider value={test}>
+    const getEmails = async (url) => {
+        dispatch({type: "SET_LOADING"})
+        try{
+            const res = await axios.get(url)
+            const emails = await res.data.list
+            dispatch({type: "SET_EMAILS", payload: emails})
+        }
+        catch(error){
+            let err = error.message
+            dispatch({type: "SET_ERROR", payload: err})
+        }
+    }
+
+
+    useEffect(()=>{
+        getEmails(API)
+    },[])
+
+    return <EmailContext.Provider value={{...state}} >
         {children}
     </EmailContext.Provider>
 }
