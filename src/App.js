@@ -5,7 +5,7 @@ import FilterSection from "./components/FilterSection";
 function App() {
 
   return (
-    <div className="p-14 bg-theme-bgColor min-h-screen space-y-9">
+    <div className="lg:p-14 p-6 bg-theme-bgColor min-h-screen space-y-9">
       <FilterSection />
       <EmailList />
     </div>
