@@ -6,9 +6,24 @@ const EmailContext = createContext()
 
 const EMAIL_LIST_API = "https://flipkart-email-mock.now.sh/?page="
 
+const EMAIL_BODY_API = "https://flipkart-email-mock.now.sh/?id="
+
+const localStorageItem = JSON.parse(localStorage.getItem('Info'))
+// console.log(localStorageItem)
+
 const initialState = {
     emailList : [],
+    emailBody: [],
+    emailBodyDetails: {
+        id: "",
+        name: "",
+        date: "",
+        subject: "",
+        
+    },
+    readAndFavorite: localStorageItem ? localStorageItem : [],
     isLoading: false,
+    isBodyLoading: false,
     errorMsg: '',
     isSelected: false,
     currentPage: 1,
@@ -32,13 +47,31 @@ export const EmailContextProvider = ({children}) => {
         }
     }
 
-    const handleClick = (id) => {
-        dispatch({type: "SET_ISOPEN"})
-        dispatch({type: "SET_READ", payload: id})
+    const getEmailBody = async (id) => {
+        dispatch({type: "SET_BODY_LOADING"})
+        try{
+            const res = await axios.get(EMAIL_BODY_API + id)
+            const emailBody = await res.data
+            // console.log(emailBody);
+            
+            dispatch({type: "SET_EMAIL_BODY", payload: emailBody})
+            dispatch({type: "SET_ISOPEN"})
+            dispatch({type: "SET_READ", payload: id})
+            
+        }
+        catch(error){
+            console.log(error);
+            let err = error.message
+            dispatch({type: "SET_ERROR", payload: err})
+        }
     }
 
     const setCurrentPage = (pageNo) => {
         dispatch({type: "SET_CURRENT_PAGE", payload: pageNo})
+    }
+
+    const handleFavorite = (id) => {
+        dispatch({type: "SET_FAVORITE", payload: id})
     }
 
     const handleClose = () => {
@@ -49,7 +82,12 @@ export const EmailContextProvider = ({children}) => {
         getEmails(state.currentPage)
     },[state.currentPage])
 
-    return <EmailContext.Provider value={{...state, setCurrentPage, handleClick, handleClose}} >
+    useEffect(()=>{
+        localStorage.setItem('Info',JSON.stringify(state.readAndFavorite))
+
+    },[state.readAndFavorite])
+
+    return <EmailContext.Provider value={{...state, setCurrentPage, handleClose, getEmailBody,handleFavorite}} >
         {children}
     </EmailContext.Provider>
 }

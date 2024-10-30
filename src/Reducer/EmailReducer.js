@@ -7,10 +7,21 @@ const EmailReducer = (state,action) => {
             }
         
         case "SET_EMAILS":
+            const updatedEmailList = action.payload.map((curEle)=>{
+                return ( {...curEle,read: false, isFavorite: false} )
+            })
+            const tempreadAndFavorite = action.payload.map((item)=>({id: item.id, read: false, isFavorite: false}))
+            const combinedData = [...state.readAndFavorite, ...tempreadAndFavorite]
+            const uniqueData = combinedData.filter((item, index, self) => 
+                index === self.findIndex((t)=>t.id === item.id)
+            )
+            // const localStorageItem = localStorage.getItem('Info')
+            // console.log(JSON.parse(localStorageItem))
             return{
                 ...state,
                 isLoading: false,
-                emailList: action.payload
+                emailList: updatedEmailList,
+                readAndFavorite: uniqueData
             }
 
         case "SET_ERROR":
@@ -33,11 +44,33 @@ const EmailReducer = (state,action) => {
                     (curEle.id === id) ? {...curEle,read: true} : {...curEle}
                 )
             })
+            let updatedRead = state.readAndFavorite.map((item)=>{
+                return(
+                    (item.id === id) ? {...item, read: true} : {...item}
+                )
+            })
 
+            return{
+                ...state,
+                emailList: updatedEmails,
+                readAndFavorite: updatedRead
+            }
+        
+        /* 
+        case "SET_READ":
+
+            let id = action.payload
+            let updatedEmails = state.emailList.map((curEle)=>{
+                return(
+                    (curEle.id === id) ? {...curEle,read: true} : {...curEle}
+                )
+            })
             return{
                 ...state,
                 emailList: updatedEmails
             }
+
+        */
 
         case "SET_ISOPEN":
             return{
@@ -49,6 +82,62 @@ const EmailReducer = (state,action) => {
             return{
                 ...state,
                 isSelected: false
+            }
+
+        case "SET_BODY_LOADING":
+            return{
+                ...state,
+                isBodyLoading: true,
+                emailBody: [],
+                emailBodyDetails: [],
+            }
+
+        case "SET_EMAIL_BODY":
+
+           const emailId = action.payload.id
+           const emailBodyDetail = state.emailList.find((curEle)=> curEle.id === emailId )
+
+            return{
+                ...state,
+                emailBodyDetails: {
+                    id: emailBodyDetail.id,
+                    name: emailBodyDetail.from.name,
+                    date: emailBodyDetail.date,
+                    subject: emailBodyDetail.subject,
+                    favorite: emailBodyDetail.isFavorite,
+                },
+                isBodyLoading: false,
+                emailBody: action.payload,
+            }
+
+        case "SET_FAVORITE":
+            const curId = action.payload
+            // const favoriteValue = 
+            const updatedEmailFavorite = state.emailList.map((curEle)=> {
+                return (
+                    (curEle.id === curId) ? {...curEle,isFavorite: !curEle.isFavorite} : {...curEle}
+                )
+            })
+            const updatedFavorite = state.readAndFavorite.map((curEle)=> {
+                return (
+                    (curEle.id === curId) ? {...curEle,isFavorite: !curEle.isFavorite} : {...curEle}
+                )
+            })
+
+            if(state.emailBodyDetails.id === curId) {
+                // state.emailBodyDetails.favorite = !state.emailBodyDetails.favorite
+                state.emailBodyDetails.favorite = state.readAndFavorite.find((item)=>(item.id)===curId && (!item.isFavorite))
+                
+            }
+            // const test = state.readAndFavorite.find((item)=>(item.id)===curId && item.isFavorite)
+            // console.log(test);
+            
+
+            return{
+                ...state,
+                emailList: updatedEmailFavorite,
+                emailBodyDetails: state.emailBodyDetails,
+                readAndFavorite: updatedFavorite
             }
 
         default:
