@@ -6,7 +6,6 @@ import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 
 const EmailList = () => {
   const {
-    emailList,
     isLoading,
     errorMsg,
     currentPage,
@@ -20,6 +19,7 @@ const EmailList = () => {
     emailBodyDetails,
     handleFavorite,
     readAndFavorite,
+    filteredEmail,
   } = useEmailContext();
   // console.log(emailList);
   const paginationLink = [];
@@ -66,7 +66,7 @@ const EmailList = () => {
               : "w-full"
           }`}
         >
-          {emailList.map((curEle) => {
+          {filteredEmail.map((curEle) => {
             // var time = curEle.date
             // var date = new Date(time)
             const item = readAndFavorite.filter((item)=>item.id === curEle.id)
@@ -160,9 +160,18 @@ const EmailList = () => {
                   </div>
                   <div className="text-white flex items-center gap-2 bg-theme-pinkColor px-2 md:px-4 py-1 hover:shadow-lg hover:translate-x-[1px] hover:translate-y-[1px] rounded-full cursor-pointer" onClick={()=>handleFavorite(emailBodyDetails.id)}>
                     
-                    <p className="hidden md:block">{emailBodyDetails.favorite ? "Remove from Favorite" : "Mark as Favorite"}</p>
+                    <p className="hidden md:block">
+                      {(readAndFavorite.find((item)=>item.id === emailBodyDetails.id )?.isFavorite) ? "Remove from Favorite" : "Mark as Favorite"}
+                    </p>
                     {/* <p className="hidden md:block">Mark as Favorite</p> */}
-                    {emailBodyDetails.favorite ? <MdFavorite /> : <MdFavoriteBorder />}
+                      {
+                        (readAndFavorite.find((item)=>item.id === emailBodyDetails.id )?.isFavorite) ? <MdFavorite /> : <MdFavoriteBorder />
+
+                      }
+
+                      
+                    
+                    {/* {emailBodyDetails.favorite ? <MdFavorite /> : <MdFavoriteBorder />} */}
                   </div>
                 </div>
               </div>

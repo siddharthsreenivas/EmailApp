@@ -19,8 +19,9 @@ const initialState = {
         name: "",
         date: "",
         subject: "",
-        
     },
+    filteredEmail: [],
+    appliedFilter: "all",
     readAndFavorite: localStorageItem ? localStorageItem : [],
     isLoading: false,
     isBodyLoading: false,
@@ -66,6 +67,12 @@ export const EmailContextProvider = ({children}) => {
         }
     }
 
+    const handleFilter = (action) => {
+        // console.log(action)
+        dispatch({type: "SET_FILTERED_EMAIL", payload: action})
+        
+    }
+
     const setCurrentPage = (pageNo) => {
         dispatch({type: "SET_CURRENT_PAGE", payload: pageNo})
     }
@@ -87,7 +94,7 @@ export const EmailContextProvider = ({children}) => {
 
     },[state.readAndFavorite])
 
-    return <EmailContext.Provider value={{...state, setCurrentPage, handleClose, getEmailBody,handleFavorite}} >
+    return <EmailContext.Provider value={{...state, setCurrentPage,handleFilter, handleClose, getEmailBody,handleFavorite}} >
         {children}
     </EmailContext.Provider>
 }
