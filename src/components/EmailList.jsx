@@ -20,6 +20,7 @@ const EmailList = () => {
     handleFavorite,
     readAndFavorite,
     filteredEmail,
+    appliedFilter
   } = useEmailContext();
   // console.log(emailList);
   const paginationLink = [];
@@ -112,6 +113,7 @@ const EmailList = () => {
               </div>
             );
           })}
+
         </div>
 
         <div
@@ -184,8 +186,12 @@ const EmailList = () => {
         </div>
       </div>
 
-      {!isLoading && (
-        <div className="flex flex-col gap-3 items-center justify-center">
+      {/* {(filteredEmail == []) && <p>No Items</p>} */}
+
+      {
+        (!isLoading && appliedFilter === "all" ) ? 
+        (
+          <div className="flex flex-col gap-3 items-center justify-center">
           <div className="space-x-3">
           {paginationLink.map((curEle, id) => {
             return (
@@ -204,9 +210,14 @@ const EmailList = () => {
           <button className="px-5 py-1 border-2 border-theme-textColor/60 rounded-lg text-theme-textColor font-semibold hover:shadow-xl active:bg-theme-textColor/10 hover:border-theme-textColor" onClick={clearLocalStorage}>
             Clear Local Data
           </button>
-          
         </div>
-      )}
+        ) : (!isLoading && filteredEmail.length === 0) ? (
+          <div className="text-theme-textColor font-bold text-2xl text-center">
+            No Items Found !!
+          </div>
+        ) : null
+      }
+
 
 
     </div>

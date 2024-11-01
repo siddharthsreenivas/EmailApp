@@ -19,7 +19,7 @@ const FilterSection = () => {
         onClick={()=>handleFilter("unread")} >
           Unread
         </button>
-        <button className={`over:border-theme-textColor border-2 border-theme-bgColor px-4 rounded-3xl ${appliedFilter === "read" && "border-theme-textColor/50 border-2 bg-theme-filtrBtn"}`}
+        <button className={`hover:border-theme-textColor border-2 border-theme-bgColor px-4 rounded-3xl ${appliedFilter === "read" && "border-theme-textColor/50 border-2 bg-theme-filtrBtn"}`}
          onClick={()=>handleFilter("read")} >
           Read
         </button>
