@@ -76,7 +76,7 @@ const EmailList = () => {
             return (
               <div
                 key={curEle.id}
-                className={`w-full border-[1.5px] border-theme-borderColor py-3 px-4 rounded-lg flex cursor-pointer  lg:flex-row lg:gap-5 flex-wrap lg:flex-nowrap items-start gap-3 hover:shadow-lg hover:scale-[.99] 
+                className={`w-full border-[1.5px] border-theme-borderColor py-3 px-4 rounded-lg flex cursor-pointer  lg:flex-row lg:gap-5 flex-wrap lg:flex-nowrap items-start gap-3 hover:shadow-lg hover:scale-[.99] hover:border-theme-textColor/50 
                   ${item[0].read ? "bg-theme-readBg" : "bg-white"} 
                   ${isSelected ? "flex-col" : ""}`}
                 onClick={() => getEmailBody(curEle.id)}
